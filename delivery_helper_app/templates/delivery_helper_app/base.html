@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block titlebar %}UCA - Delivery Helper{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'delivery_helper_app/css/jquery-ui.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'delivery_helper_app/css/jquery-ui.structure.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'delivery_helper_app/css/jquery-ui.theme.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'delivery_helper_app/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'delivery_helper_app/css/bootstrap-theme.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'delivery_helper_app/css/delivery_helper.css' %}">
+    <script type="text/javascript" src="{% static 'delivery_helper_app/js/jquery-3.2.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'delivery_helper_app/js/jquery-ui.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'delivery_helper_app/js/bootstrap.js' %}"></script>
+    {% block extrahead %}
+    {% endblock %}
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">UCA Delivery Helper</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li {% comment %}class="active"{% endcomment %}><a href="{% url 'index' %}">Inicio</a></li>
+                        {% if not request.user.is_authenticated %}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Registrarse <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{% url 'createusuario' %}">Usuario</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="{% url 'createrepartidor' %}">Repartidor</a></li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            {% if request.user.is_staff %}
+                                <li><a href="{% url 'admin:index' %}">Admin</a></li>
+                            {% endif %}
+                            {% if request.user.usuario_set.all.count == 1 %}
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Direcciones <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="{% url 'direccioneslist' %}">Listar direcciones</a></li>
+                                        <li><a href="{% url 'createdireccion' %}">Nueva dirección</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Entregas <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="{% url 'entregaslist' %}">Listar entregas</a></li>
+                                        <li><a href="{% url 'createentrega' %}">Nueva entrega</a></li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if request.user.repartidor_set.all.count == 1 %}
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Repartos <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="{% url 'repartidorentregaslist' %}">Listar repartos</a></li>
+                                        <li><a href="{% url 'repartidorcreateentrega' %}">Nueva reparto</a></li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+                    </ul>
+                    <form class="navbar-form navbar-right" method="POST" action="{% url 'login' %}">{% csrf_token %}
+                        {% if not request.user.is_authenticated %}
+                            <div class="form-group">
+                                <input name="username" type="text" placeholder="Email" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <input name="password" type="password" placeholder="Password" class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-info">Acceder</button>
+                        {% else %}
+                            <div class="form-group">
+                                {% if request.user.usuario_set.all.count == 1 %}
+                                    <a class="btn btn-warning" href="{% url 'editusuario' %}"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Perfil</a>
+                                {% endif %}
+                                {% if request.user.repartidor_set.all.count == 1 %}
+                                    <a class="btn btn-warning" href="{% url 'editrepartidor' %}"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Perfil</a>
+                                {% endif %}
+                                <a class="btn btn-warning" href="{% url 'logout' %}"><span class="glyphicon glyphicon-off" aria-hidden="true"></span> Salir</a>
+                            </div>
+                        {% endif %}
+                    </form>
+                </div><!--/.nav-collapse -->
+            </div>
+        </nav>
+    </div>
+    {% if messages %}
+        {% for message in messages %}
+
+            <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">x</a>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% if request.user.is_authenticated %}
+        {% for notificacion in notificaciones %}
+            <div class="alert alert-info alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close" id="notification_{{ notificacion.pk }}">x</a>
+                {{ notificacion.texto }}
+            </div>
+        {% endfor %}
+        <script type="text/javascript">
+            function remove_notification(pk) {
+                $.post("{% url "removenotifications" %}", {'pk': pk});
+                return true;
+            }
+            $("document").ready(function() {
+                {% for notification in notificaciones %}
+                    $("#notification_{{ notification.pk }}").click(function() { remove_notification({{ notification.pk }})});
+                {% endfor %}
+            });
+        </script>
+    {% endif %}
+    <div class="container">
+        <div class="starter-template">
+            <h1>{% block title %}Título por defecto{% endblock %}</h1>
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div><!-- /.container -->
+    <footer class="footer">
+      <p>UCA Delivery Helper es un proyecto creado por Roberto García Carvajal para su PFC. Está licenciado GPL y puedes obtener su código fuente de <a href="http://github.com/roberpot">aquí</a>.</p>
+    </footer>
+</body>
+</html>

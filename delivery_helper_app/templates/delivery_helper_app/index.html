@@ -1,0 +1,42 @@
+{% extends 'delivery_helper_app/base.html' %}
+
+{% block title %}<h1>UCA delivery helper</h1>{% endblock %}
+
+{% block content %}
+
+        <div class="lead">
+            Sistema de ayuda para el reparto y recepción de paquetes de empresas de transporte. Si tienes un número de seguimiento y la
+        empresa que te trae el paquete está entre las disponibles, entonces esta aplicación puede ayudarte.
+        </div>
+    <div class="row maincontent">
+        <div class="col-lg-4">
+            <h2>Para clientes</h2>
+            <p>
+                Puedes usar esta aplicación para ayudar a localizar el repartidor, mantener tus direcciones de entrega,
+                solicitar al repartidor que lo entregue en otra dirección, contactar con el o dejar tu paquete en una
+                delegación.
+            </p>
+            <p>
+                {% lorem %}
+            </p>
+        </div>
+        <div class="col-lg-4">
+            <h2>Para repartidores</h2>
+            <p>
+                {% lorem %}
+            </p>
+            <p>
+                {% lorem %}
+            </p>
+        </div>
+        <div class="col-lg-4">
+            <h2>Servicios web</h2>
+            <p>
+                {% lorem %}
+            </p>
+            <p>
+                {% lorem %}
+            </p>
+        </div>
+    </div>
+{% endblock %}

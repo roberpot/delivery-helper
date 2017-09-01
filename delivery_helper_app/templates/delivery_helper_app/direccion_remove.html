@@ -1,0 +1,15 @@
+{% extends 'delivery_helper_app/base_form.html' %}
+
+{% block title %}{% endblock %}
+
+{% block panel_title %}Eliminar dirección{% endblock %}
+
+{% block form_content %}
+    <tr><th>¿Está seguro de que sí desea eliminar esta dirección?</th></tr>
+{% endblock %}
+
+{% block button_title %}Sí estoy seguro{% endblock %}
+
+{% block extra_buttons %}
+    <a class="btn btn-warning" href="{% url 'direccioneslist' %}">No, no quiero eliminarla</a>
+{% endblock %}

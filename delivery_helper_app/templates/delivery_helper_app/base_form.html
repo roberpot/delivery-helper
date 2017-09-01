@@ -1,0 +1,17 @@
+{% extends 'delivery_helper_app/base.html' %}
+
+{% block content %}
+    <form method="POST">{% csrf_token %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">{% block panel_title %}{% endblock %}</div>
+        <div class="panel-body">
+            <table class="table form_table">
+                <tbody>
+                    {% block form_content %}{% endblock %}
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-footer"><button type="submit" name="submit">{% block button_title %}Registrar{% endblock %}</button>{% block extra_buttons %}{% endblock %}</div>
+    </div>
+    </form>
+{% endblock %}

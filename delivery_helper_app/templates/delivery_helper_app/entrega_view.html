@@ -1,0 +1,61 @@
+{% extends 'delivery_helper_app/base_list.html' %}
+
+{% block title %}{% endblock %}
+
+{% block list_title %}Ver entrega{% endblock %}
+
+{% block list_body %}
+    {% if object.entregado %}
+        <tr>
+        <th colspan="2" class="table_form_special_th">¡Atención! Esta entrega ya está en su dirección de destino.</th>
+        </tr>
+    {% endif %}
+    <tr>
+        <th>Empresa: </th>
+        <td>{{ object.empresa.nombre }}</td>
+    </tr>
+    <tr>
+        <th>Número de seguimiento: </th>
+        <td>{{ object.numero_seguimiento }}</td>
+    </tr>
+    {% if object.direccion %}
+    <tr>
+        <th class="table_form_special_th" colspan="2">Dirección ({{ object.direccion.alias }})</th>
+    </tr>
+    <tr>
+        <th>Vía:</th>
+        <td>{{ object.direccion.tipovia }} {{ object.direccion.nombre_via }} {{ object.direccion.numero }} {{ object.direccion.planta }} {{ object.direccion.puerta }}</td>
+    </tr>
+    <tr>
+        <th>Localidad:</th>
+        <td>{{ object.direccion.localidad }} ({{ object.direccion.provincia }})</td>
+    </tr>
+    <tr>
+        <th>Código Postal:</th>
+        <td>{{ object.direccion.codigo_postal }}</td>
+    </tr>
+    <tr>
+        <th>Receptor:</th>
+        <td>{{ object.direccion.nombre_completo }} ({{ object.direccion.nif }})</td>
+    </tr>
+    {% elif object.delegacion %}
+    <tr>
+        <th class="table_form_special_th" colspan="2">Entrega en delegación:</th>
+    </tr>
+    <tr>
+        <th>Delegación:</th>
+        <td>{{ object.delegacion.direccion }}</td>
+    </tr>
+    {% endif %}
+{% endblock %}
+
+{% block panel-footer %}
+    {% if not object.entregado %}
+        {% if object.repartidor %}
+            <a class="btn btn-success" href="{% url 'viewgeoentrega' pk=entrega.pk %}"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> Información Repartidor</a>
+        {% endif %}
+        <a class="btn btn-warning" href="{% url 'cambiardelegacionentrega' pk=entrega.pk %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Dejar en delegación</a>
+        <a class="btn btn-warning" href="{% url 'cambiardireccionentrega' pk=object.pk %}"><span class="glyphicon glyphicon-flag" aria-hidden="true"></span> Cambiar dirección</a>
+    {% endif %}
+    <a class="btn btn-danger" href="{% url 'removeentrega' pk=object.pk %}"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Eliminar</a>
+{% endblock %}

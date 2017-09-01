@@ -1,0 +1,15 @@
+{% extends 'delivery_helper_app/base_form.html' %}
+
+{% block title %}{% endblock %}
+
+{% block panel_title %}Eliminar reparto{% endblock %}
+
+{% block form_content %}
+    <tr><th colspan="2" class="table_form_special_th">¿Está seguro de que sí desea eliminar este reparto?</th></tr>
+{% endblock %}
+
+{% block button_title %}Sí estoy seguro{% endblock %}
+
+{% block extra_buttons %}
+    <a class="btn btn-warning" href="{% url 'repartidorentregaslist' %}">No, no quiero eliminarla</a>
+{% endblock %}

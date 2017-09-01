@@ -1,0 +1,95 @@
+{% extends 'delivery_helper_app/base_list.html' %}
+
+{% block title %}{% endblock %}
+
+{% block extrahead %}
+    <script type="text/javascript">
+        function compute_coord(coord) {
+            return parseFloat(coord.replace(',', '.'))
+        }
+        function init_map() {
+        {% if object.direccion %}
+            var marker_1_data = {lat: compute_coord("{{ object.direccion.latitude }}"), lng: compute_coord("{{ object.direccion.longitude }}")};
+        {% else %}
+            var marker_1_data = {lat: compute_coord("{{ object.delegacion.latitude }}"), lng: compute_coord("{{ object.delegacion.longitude }}")};
+        {% endif %}
+        alert(marker_1_data);
+        var marker_2_data = {lat: compute_coord("{{ object.repartidor.latitude }}"), lng: compute_coord("{{ object.repartidor.longitude }}")};
+        var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 14,
+        center: marker_1_data
+        });
+        var marker_1 = new google.maps.Marker({
+        position: marker_1_data,
+        map: map,
+        label: 'D',
+        title: 'Destino'
+        });
+        var marker_2 = new google.maps.Marker({
+        position: marker_2_data,
+        map: map,
+        label: 'R',
+        animation: google.maps.Animation.BOUNCE,
+        title: 'Repartidor'
+        });
+        $("document").ready(function () {
+
+        });
+      }
+    </script>
+{% endblock %}
+
+{% block list_title %}Ver información de repartidor{% endblock %}
+
+{% block list_body %}
+    <tr>
+        <th>Empresa: </th>
+        <td>{{ object.empresa.nombre }}</td>
+    </tr>
+    <tr>
+        <th>Número de seguimiento: </th>
+        <td>{{ object.numero_seguimiento }}</td>
+    </tr>
+    <tr>
+        <th>Teléfono repartidor:</th>
+        <td>{{ object.repartidor.phone }}</td>
+    </tr>
+    <tr>
+        <th>Distancia:</th>
+        <td id="distancia"></td>
+    </tr>
+    <tr>
+        <th>Tiempo estimado:</th>
+        <td id="tiempo"></td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <div id="map"></div>
+            <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?callback=init_map"></script>
+            <script type="text/javascript">
+                function get_distance() {
+                    var distanceService = new google.maps.DistanceMatrixService();
+                    distanceService.getDistanceMatrix({
+                        origins: [String(compute_coord("{{ object.direccion.latitude }}")) + "," + String(compute_coord("{{ object.direccion.longitude }}"))],
+                        destinations: [String(compute_coord("{{ object.repartidor.latitude }}")) + "," + String(compute_coord("{{ object.repartidor.longitude }}"))],
+                        unitSystem: google.maps.UnitSystem.METRIC,
+                        travelMode: google.maps.TravelMode.DRIVING,
+                        durationInTraffic: true,
+                        avoidHighways: false,
+                        avoidTolls: false
+                    }, function (response, status) {
+                        if (status !== google.maps.DistanceMatrixStatus.OK) {
+                            $("#distancia").text("Google API fuera de servicio").show();
+                            $("#tiempo").text("Google API fuera de servicio").show();
+                        } else {
+                            $("#distancia").text(response.rows[0].elements[0].distance.text).show();
+                            $("#tiempo").text(response.rows[0].elements[0].duration.text).show();
+                        }
+                    });
+                }
+                get_distance();
+            </script>
+        </td>
+    </tr>
+
+{% endblock %}

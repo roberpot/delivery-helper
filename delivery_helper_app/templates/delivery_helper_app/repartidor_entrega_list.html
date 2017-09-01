@@ -1,0 +1,55 @@
+{% extends 'delivery_helper_app/base_list.html' %}
+
+{% load static %}
+
+{% block title %}{% endblock %}
+
+{% block list_title %}Lista de repartos{% endblock %}
+
+{% block extrahead %}
+    <script type="text/javascript">
+        function proc_geolocation(position) {
+            $.post(
+                "{% url 'updategeo' %}",
+                {
+                    'lon': position.coords.longitude,
+                    'lat': position.coords.latitude
+                });
+        }
+
+    function get_geolocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(proc_geolocation);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    $("document").ready(function () {
+        get_geolocation();
+    });
+    </script>
+{% endblock %}
+
+{% block list_head %}
+    <th>Acciones</th>
+    <th>Núm. Seg.</th>
+{% endblock %}
+
+{% block list_body %}
+    {% for entrega in entrega_list %}
+        <tr>
+            <td>
+                <a class="btn btn-success" href="{% url 'viewreparto' pk=entrega.pk %}"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+                <a class="btn btn-warning" href="{% url 'entregarreparto' pk=entrega.pk %}"><span class="glyphicon glyphicon-gift" aria-hidden="true"></span></a>
+                <a class="btn btn-warning" href="{% url 'cambiardireccionreparto' pk=entrega.pk %}"><span class="glyphicon glyphicon-flag" aria-hidden="true"></span></a>
+                <a class="btn btn-danger" href="{% url 'removereparto' pk=entrega.pk %}"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+            </td>
+            <td>{{ entrega.numero_seguimiento }}</td>
+        </tr>
+    {% empty %}
+        <td colspan="">No dispone de ningún reparto.</td>
+    {% endfor %}
+{% endblock %}
+
+{% block panel-footer %}<a class="btn btn-success" href="{% url 'repartidorcreateentrega' %}">Añadir reparto</a>{% endblock %}

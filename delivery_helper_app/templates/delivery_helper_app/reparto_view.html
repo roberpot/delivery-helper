@@ -1,0 +1,59 @@
+{% extends 'delivery_helper_app/base_list.html' %}
+
+{% block title %}{% endblock %}
+
+{% block list_title %}Ver entrega{% endblock %}
+
+{% block list_body %}
+    <tr>
+        <th>Número de seguimiento: </th>
+        <td>{{ object.numero_seguimiento }}</td>
+    </tr>
+    <tr>
+        <th>Propietario:</th>
+        <tr>{{ object.usuario.user.firstname }} {{ object.usuario.user.lastname }}
+    </tr>
+    <tr>
+        <th>Teléfono</th>
+        <td>{{ object.usuario.phone }}</td>
+    </tr>
+    <tr>
+        <th>Email</th>
+        <td>{{ object.usuario.user.email }}</td>
+    </tr>
+    {% if object.direccion %}
+    <tr>
+        <th class="table_form_special_th" colspan="2">Dirección</th>
+    </tr>
+    <tr>
+        <th>Vía:</th>
+        <td>{{ object.direccion.tipovia }} {{ object.direccion.nombre_via }} {{ object.direccion.numero }} {{ object.direccion.planta }} {{ object.direccion.puerta }}</td>
+    </tr>
+    <tr>
+        <th>Localidad:</th>
+        <td>{{ object.direccion.localidad }} ({{ object.direccion.provincia }})</td>
+    </tr>
+    <tr>
+        <th>Código Postal:</th>
+        <td>{{ object.direccion.codigo_postal }}</td>
+    </tr>
+    <tr>
+        <th>Receptor:</th>
+        <td>{{ object.direccion.nombre_completo }} ({{ object.direccion.nif }})</td>
+    </tr>
+    {% elif object.delegacion %}
+    <tr>
+        <th class="table_form_special_th" colspan="2">Entrega en delegación:</th>
+    </tr>
+    <tr>
+        <th>Delegación:</th>
+        <td>{{ object.delegacion.direccion }}</td>
+    </tr>
+    {% endif %}
+{% endblock %}
+
+{% block panel-footer %}
+    <a class="btn btn-warning" href="{% url 'entregarreparto' pk=object.pk %}"><span class="glyphicon glyphicon-gift" aria-hidden="true"></span> Entregar</a>
+    <a class="btn btn-warning" href="{% url 'cambiardireccionreparto' pk=object.pk %}"><span class="glyphicon glyphicon-flag" aria-hidden="true"></span> Cambiar dirección</a>
+    <a class="btn btn-danger" href="{% url 'removereparto' pk=object.pk %}"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Eliminar</a>
+{% endblock %}

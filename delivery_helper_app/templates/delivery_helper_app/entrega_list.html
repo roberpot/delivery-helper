@@ -1,0 +1,34 @@
+{% extends 'delivery_helper_app/base_list.html' %}
+
+{% block title %}{% endblock %}
+
+{% block list_title %}Lista de entregas{% endblock %}
+
+{% block list_head %}
+    <th>Acciones</th>
+    <th>Núm. Seg.</th>
+    <th>Empresa</th>
+    <th>Entregado</th>
+{% endblock %}
+
+{% block list_body %}
+    {% for entrega in entrega_list %}
+        <tr>
+            <td>
+                <a class="btn btn-success" href="{% url 'viewentrega' pk=entrega.pk %}"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+                {% if not entrega.entregado %}
+                    <a class="btn btn-warning" href="{% url 'cambiardelegacionentrega' pk=entrega.pk %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a>
+                    <a class="btn btn-warning" href="{% url 'cambiardireccionentrega' pk=entrega.pk %}"><span class="glyphicon glyphicon-flag" aria-hidden="true"></span></a>
+                {% endif %}
+                <a class="btn btn-danger" href="{% url 'removeentrega' pk=entrega.pk %}"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+            </td>
+            <td>{{ entrega.numero_seguimiento }}</td>
+            <td>{{ entrega.empresa.nombre }}</td>
+            <td>{% if entrega.entregado %}Sí{% else %}No{% endif %}</td>
+        </tr>
+    {% empty %}
+        <td colspan="">No dispone de ninguna entrega.</td>
+    {% endfor %}
+{% endblock %}
+
+{% block panel-footer %}<a class="btn btn-success" href="{% url 'createentrega' %}">Crear entrega</a>{% endblock %}
