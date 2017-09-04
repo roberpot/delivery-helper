@@ -17,6 +17,7 @@
   Purpose: 
 """
 
+from django.conf import settings
 from delivery_helper_core.models import Notificacion
 
 
@@ -25,5 +26,6 @@ __author__ = u"Roberto García Carvajal"
 
 def DeliveryHelperContextProcessor(request):
     if request.user.is_authenticated():
-        return {'notificaciones': Notificacion.get_for_user(request.user)}
+        return {'notificaciones': Notificacion.get_for_user(request.user),
+                'google_api_key': settings.GOOGLE_API_KEY}
     return {}

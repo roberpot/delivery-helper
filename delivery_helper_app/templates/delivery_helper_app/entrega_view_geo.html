@@ -13,7 +13,6 @@
         {% else %}
             var marker_1_data = {lat: compute_coord("{{ object.delegacion.latitude }}"), lng: compute_coord("{{ object.delegacion.longitude }}")};
         {% endif %}
-        alert(marker_1_data);
         var marker_2_data = {lat: compute_coord("{{ object.repartidor.latitude }}"), lng: compute_coord("{{ object.repartidor.longitude }}")};
         var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 14,
@@ -65,7 +64,7 @@
     <tr>
         <td colspan="2">
             <div id="map"></div>
-            <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?callback=init_map"></script>
+            <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ google_api_key }}&callback=init_map"></script>
             <script type="text/javascript">
                 function get_distance() {
                     var distanceService = new google.maps.DistanceMatrixService();

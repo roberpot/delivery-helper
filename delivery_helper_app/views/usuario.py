@@ -267,8 +267,9 @@ class RemoveEntrega(DeleteView):
         return reverse_lazy('entregaslist')
 
     def post(self, *args, **kwargs):
+        obj = self.get_object()
         success(self.request, u"Entrega eliminada correctamente.")
-        self.object.notificar_repartidor(u"Reparto %s eliminado por el usuario." % self.object.numero_seguimiento)
+        obj.notificar_repartidor(u"Reparto %s eliminado por el usuario." % obj.numero_seguimiento)
         return super(RemoveEntrega, self).post(*args, **kwargs)
 
 
