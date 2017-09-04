@@ -17,11 +17,10 @@
   Purpose: Direccion model module.
 """
 
-import geocoder
+import json
+import urllib
 
-from django.conf import settings
 from django.db import models
-from django.utils.encoding import smart_str
 
 from delivery_helper_core.fields import NIFField
 
@@ -67,10 +66,15 @@ class Direccion(models.Model):
             address = "%s %s %s, %s, %s" % (self.tipovia, self.nombre_via, self.numero, self.localidad, self.provincia)
             for x, y in zip(u"áéíóúÁÉÍÓÚñÑ", u"aeiouAEIOUnN"):
                 address = address.replace(x, y)
-            g = geocoder.google(address)
-            self.longitude = g.geometry['coordinates'][0]
-            self.latitude = g.geometry['coordinates'][1]
-            return True
+            params = {'address': address, 'sensor': "false"}
+            url = 'http://maps.googleapis.com/maps/api/geocode/json?' + urllib.urlencode(params)
+            response = urllib.urlopen(url)
+            response = json.loads(response.read())
+            if response['results']:
+                self.longitude = response['results'][0]['geometry']['location']['lng']
+                self.latitude = response['results'][0]['geometry']['location']['lat']
+                return True
+            return False
         except:
             return False
 
